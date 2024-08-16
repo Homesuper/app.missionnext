@@ -1,0 +1,49 @@
+.login-form {
+    margin-top: 15%;
+}
+.custom-form input[type=submit] {
+    display: block;
+    margin: 15px auto;
+    width: 33%;
+}
+.navbar {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.breadcrumb {
+    margin-bottom: 50px;
+    background-color: transparent;
+}
+span.pull-right {
+    padding-top: 30px;
+}
+.edit-form-buttons {
+    margin-top: 20px;
+}
+.cancel_btm {
+    margin-top: 15px;
+    width: 33%;
+}
+.user-filters {
+    margin-top: 25px;
+    width: 80%;
+}
+.filter-result {
+    margin-top: -18px;
+}
+.ajax-footer {
+    margin-bottom: 50px;
+}
+.user-search-form input[type=text]{
+    width: 80%;
+}
+
+.profile-table{
+    font-size: 12px;
+}
+.profile-table thead tr th,
+.profile-table thead tr td,
+.profile-table tbody tr th,
+.profile-table tbody tr td{
+    padding: 4px 8px;
+}

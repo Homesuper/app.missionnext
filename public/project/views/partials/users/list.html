@@ -1,0 +1,109 @@
+<style>
+    .sub-grace {
+        background-color: #ffff00;
+    }
+
+    .sub-expired {
+        background-color: #c30100;
+    }
+    .dashed {
+
+    }
+
+    .sortable{
+        border-bottom: 1px dashed #000000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .sortable-glyph{
+        color: blue; cursor: pointer;
+        font-size: small;
+    }
+</style>
+<div class="user-list">
+    <div class="row">
+        <div class="col-md-7 col-md-offset-1">
+            <input ng-change="customFiltering()" ng-model="search.profile" class="form-control"
+                   placeholder="Search by username or email" name="search" type="text">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-10">
+                    <h3>
+                        User list
+                    </h3>
+                </div>
+                <!--<div class="col-md-2 pagination-info">-->
+                <!--<span class="pull-right"> <% to %> / <%  total %> </span>-->
+                <!--</div>-->
+            </div>
+
+
+            <div id="firter-rezult">
+            </div>
+
+            <div id="default-rezult">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th  ng-click="sort('username');"><span class="sortable">Username</span> <span ng-show="sortUser.p === 'username'"  class="sortable-glyph <% sortUser.getCssClass(); %>"></span></th>
+                        <th>E-mail</th>
+                        <th>Status</th>
+                        <th  ng-click="sort('created_at');"><span class="sortable">Created at</span> <span ng-show="sortUser.p === 'created_at'"  class="sortable-glyph <% sortUser.getCssClass(); %>"></span></th>
+                        <th  ng-click="sort('last_login');"><span class="sortable">Last login</span> <span ng-show="sortUser.p === 'last_login'"  class="sortable-glyph <% sortUser.getCssClass(); %>"></span></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="sub-<% user.general_status %>" current-page="pagination.current" total-items="totalUsers" dir-paginate="user in users
+                        | itemsPerPage: itemsPerPage">
+                        <td><% ($index + 1) + (itemsPerPage * (pagination.current - 1))%></td>
+                        <td><a href="user#/<% user.id %>" title="<% user.id %>"><% user.username %></a></td>
+                        <td><% user.email %></td>
+                        <td>
+                            <span class="glyphicon <% user.status == 1 && 'glyphicon-warning-sign'%>
+                            <% user.is_active && 'glyphicon-ok' || 'glyphicon-remove' %>
+                            "></span></td>
+                        <td><% user.created_at | date %></td>
+                        <td><% user.last_login | date %></td>
+
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="text-center">
+                    <dir-pagination-controls on-page-change="pageChanged(newPageNumber)">
+
+                    </dir-pagination-controls>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="user-filters pull-right">
+                <h3>Filters:</h3>
+            </div>
+
+            <div class="user-filters pull-right">
+                <label for="apps-select-id">By applications:</label>
+                <textarea id="apps-select-id"></textarea>
+            </div>
+
+            <div class="user-filters pull-right">
+                <label for="role-select-id">By roles:</label>
+                <textarea id="role-select-id"></textarea>
+            </div>
+            <div class="user-filters pull-right">
+                <label for="status-select-id">By status:</label>
+                <textarea id="status-select-id"></textarea>
+            </div>
+            <div class="user-filters pull-right">
+                <label for="sub-status-select-id">Subscription Status:</label>
+                <textarea id="sub-status-select-id"></textarea>
+            </div>
+        </div>
+    </div>
+</div>

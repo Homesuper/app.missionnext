@@ -1,0 +1,104 @@
+{
+	"name": "laravel/laravel",
+	"description": "The Laravel Framework.",
+	"keywords": ["framework", "laravel"],
+	"license": "MIT",
+	"require": {
+		"authorizenet/authorizenet": "1.9.2",
+		"cartalyst/sentry": "2.1.4",
+		"classpreloader/classpreloader": "1.0.2",
+		"clue/stream-filter": "1.4.0",
+		"d11wtq/boris": "1.0.8",
+		"davejamesmiller/laravel-breadcrumbs": "2.3.0",
+		"doctrine/annotations": "1.2.0",
+		"doctrine/cache": "1.3.0",
+		"doctrine/collections": "1.2",
+		"doctrine/common": "2.4.2",
+		"doctrine/dbal": "2.4.2",
+		"doctrine/inflector": "1.0",
+		"doctrine/instantiator": "1.0.5",
+		"doctrine/lexer": "1.0",
+		"filp/whoops": "1.1.2",
+		"guzzlehttp/guzzle": "6.3.3",
+		"guzzlehttp/promises": "1.3.1",
+		"guzzlehttp/psr7": "1.4.2",
+		"ircmaxell/password-compat": "1.0.3",
+		"jeremeamia/superclosure": "1.0.1",
+		"jms/metadata": "1.5.1",
+		"jms/parser-lib": "1.0.0",
+		"jms/serializer": "1.2.0",
+		"laravel/framework": "4.2.22",
+		"monolog/monolog": "1.10.0",
+		"nesbot/carbon": "1.39.1",
+		"nikic/php-parser": "0.9.5",
+		"patchwork/utf8": "1.1.25",
+		"pda/pheanstalk": "2.0.0",
+		"php-http/discovery": "1.4.0",
+		"php-http/guzzle6-adapter": "1.1.1",
+		"php-http/httplug": "1.1.0",
+		"php-http/message": "1.6.0",
+		"php-http/message-factory": "1.0.2",
+		"php-http/promise": "1.0.0",
+		"phpcollection/phpcollection": "0.4.0",
+		"phpoption/phpoption": "1.5.0",
+		"phpseclib/phpseclib": "0.3.8",
+		"predis/predis": "0.8.7",
+		"psr/http-message": "1.0.1",
+		"psr/log": "1.0.0",
+		"shuber/curl": "dev-master#6624992",
+		"sparkpost/sparkpost": "2.3.0",
+		"stack/builder": "1.0.2",
+		"swiftmailer/swiftmailer": "5.4.12",
+		"symfony/browser-kit": "2.7.51",
+		"symfony/console": "2.7.51",
+		"symfony/css-selector": "2.7.51",
+		"symfony/debug": "2.7.51",
+		"symfony/dom-crawler": "2.7.51",
+		"symfony/event-dispatcher": "2.7.51",
+		"symfony/filesystem": "2.7.51",
+		"symfony/finder": "2.7.51",
+		"symfony/http-foundation": "2.7.51",
+		"symfony/http-kernel": "2.7.51",
+		"symfony/process": "2.7.51",
+		"symfony/routing": "2.7.51",
+		"symfony/security-core": "2.7.51",
+		"symfony/translation": "2.7.51"
+	},
+	"autoload": {
+		"classmap": [
+			"app/commands",
+			"app/database/migrations",
+			"app/database/seeds",
+			"app/tests/TestCase.php"
+		],
+        "psr-0": {
+            "MissionNext": "app/library"
+        },
+        "psr-4": {
+            "MissionNext\\Repos\\": "app/repos",
+            "MissionNext\\Models\\": "app/models",
+            "MissionNext\\Custom\\Validators\\": "app/validators",
+            "MissionNext\\Controllers\\": "app/controllers"
+        }
+	},
+	"scripts": {
+		"post-install-cmd": [
+			"php artisan clear-compiled",
+			"php artisan optimize"
+		],
+		"post-update-cmd": [
+			"php artisan clear-compiled",
+			"php artisan optimize"
+		],
+		"post-create-project-cmd": [
+			"php artisan key:generate"
+		]
+	},
+	"config": {
+		"preferred-install": "dist",
+		"allow-plugins": {
+			"kylekatarnls/update-helper": true
+		}
+	},
+	"minimum-stability": "stable"
+}

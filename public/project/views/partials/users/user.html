@@ -1,0 +1,240 @@
+<style>
+    select{
+        color: black !important;
+    }
+
+    .ng-modal-overlay {
+        /* A dark translucent div that covers the whole screen */
+        position:fixed;
+        z-index:9999;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background-color:#000000;
+        opacity: 0.8;
+    }
+    .ng-modal-dialog {
+        /* A centered div above the overlay with a box shadow. */
+        z-index:10000;
+        position: fixed;
+        width: 30%; /* Default */
+
+        /* Center the dialog */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        -webkit-transform: translate(-50%, -50%);
+        -moz-transform: translate(-50%, -50%);
+
+        /*box-shadow: 4px 4px 80px #000;*/
+    }
+    .ng-modal-dialog-content {
+
+        text-align: left;
+    }
+    .ng-modal-close {
+        position: absolute;
+        top: 3px;
+        right: 5px;
+        padding: 5px;
+        cursor: pointer;
+        font-size: 120%;
+        display: inline-block;
+        font-weight: bold;
+        font-family: 'arial', 'sans-serif';
+    }
+
+</style>
+
+<table class="table table-bordered" >
+    <tbody>
+    <tr>
+        <th>Username </th>
+        <td><% user.username %></td>
+    </tr>
+    <tr>
+        <th>Email </th>
+        <td><% user.email %></td>
+    </tr>
+    <tr ng-show="user.role === 'candidate'">
+        <th >First Name</th>
+        <td ><% user.profileData.first_name  %></td>
+    </tr>
+    <tr ng-show="user.role === 'candidate'">
+        <th >Last Name</th>
+        <td><% user.profileData.last_name  %></td>
+    </tr>
+    <tr ng-show="user.role === 'candidate'">
+        <th >Country</th>
+        <td ><% user.profileData.country  %></td>
+    </tr>
+    <tr>
+        <th>Registered </th>
+        <td><% user.created_at %></td>
+    </tr>
+    <tr>
+        <th>Global Status</th>
+        <td><span style="text-transform: uppercase;"><% userStatusMessage %></span><hr>
+            <p>
+                <button ng-click="setActive($event)" type="button" class="btn btn-success btn-xs"  ng-disabled="(user.status != 1) &&  user.is_active" >Grant Access</button>
+                <button ng-click="setDisabled($event)" type="button" class="btn btn-danger btn-xs" ng-disabled="(user.status != 1) && (!user.is_active)">Deny Access</button>
+            </p>
+            <p class="help-block"><span style="font-weight: bold;">Note:</span> User is notified by email on status changes.</p>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div class="profile-data">
+    <a class="btn btn-default"  href="/dashboard/user/profile/<% user.id %>">Full Profile</a>
+    <button class="btn btn-danger" ng-click="modalDelete = !modalDelete;">Delete this user from the system completely</button>
+
+    <h3>Subscriptions:</h3>
+    <p ng-hide="subscriptions.length">No subscriptions</p>
+    <table ng-show="subscriptions.length" class="table table-hover" >
+        <thead>
+        <tr>
+            <th>Website </th>
+
+            <th ng-show="showLevel">Level</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Price $</th>
+            <th>Paid $</th>
+            <th>Days Left</th>
+            <th>Status</th>
+            <th>Comment</th>
+            <th></th>
+        </tr>
+        </thead>
+
+        <tbody ng-repeat="sub in subscriptions | orderBy:'id'">
+        <tr  ng-hide="sub.status == 'closed'">
+            <td><% sub.app.name %> </td>
+            <td ng-show="showLevel"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                <label for='is_active_site<% $index %>'><span style="font-weight: 100;">Is active on site</span></label>
+                <input  ng-click='toggleModal(!sub.app.is_active, sub)' id="is_active_site<% $index %>" type="checkbox" ng-model="sub.app.is_active"  ng-checked="sub.app.is_active" />
+            </td>
+            <td></td>
+        </tr>
+        <tr  ng-hide="sub.status == 'closed'">
+            <td></td>
+            <td ng-show="showLevel" >
+
+                <select style="width: auto !important;" class="form-control" ng-change="updateSub(sub, 'partnership')" ng-model="sub.partnership" ng-options="level for level in sub.partnership_levels"></select>
+            </td>
+            <td><input style="width: 100px !important;" class="form-control" ng-change="updateSub(sub, 'start_date')" ui-date="dateOptions" ui-date-format="yy-mm-dd" ng-model="sub.start_date"></td>
+            <td><input style="width: 100px !important;" class="form-control" ng-change="updateSub(sub, 'end_date')" ui-date="dateOptions" ui-date-format="yy-mm-dd" ng-model="sub.end_date"></td>
+            <td><% sub.price | currency  %></td>
+            <td> <input type="number" min="0" ng-change="updateSub(sub, 'paid')" class="form-control" style="width: 80px !important;"  ng-model="sub.paid" ></td>
+            <td><% sub.days_left  %></td>
+            <td><% sub.status  %>
+                <!--<select style="width: auto !important;" class="form-control" ng-change="updateSub(sub, 'status')" ng-model="sub.status" ng-options="status for status in sub.statuses" ></select>-->
+            </td>
+            <td><textarea ng-model="sub.comment" ng-change="updateSub(sub, 'comment')" class="form-control"><% sub.comment %></textarea>
+            </td>
+            <td>
+                <button ng-click="toggleModalCancelSub(sub)" type="button" class="btn btn-danger btn-sm">Cancel <br>Subscription</button>
+            </td>
+        </tr>
+
+        </tbody>
+
+    </table>
+    <button  ng-init="showHistory = false;" type="button" ng-click="showHistory = !showHistory;" class="btn btn-default"><% showHistory  && 'Hide' || 'Show'  %> History</button>
+
+    <div ng-show="showHistory" class="transaction-history">
+        <h3>Transactions</h3><a name="transaction-history"></a>
+        <p ng-hide="transactions.length">No Transactions</p>
+        <table  ng-show="transactions.length"   class="table table-hover">
+            <thead>
+            <tr>
+                <th>Created Date </th>
+                <th>Amount $</th>
+                <th>Comment</th>
+                <th>Transaction ID</th>
+            </tr>
+            </thead>
+            <tbody ng-repeat="transaction in transactions">
+            <tr>
+                <td><% transaction.created_at %> </td>
+                <td><% transaction.amount %></td>
+                <td><% transaction.comment %></td>
+                <td><% transaction.transaction_id %></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="myModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <p>One fine body&hellip;</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <modal-dialog show='modalDelete'>
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" ng-click="closeDelete()" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"><strong>Delete user <% user.username %>.</strong></h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure want to delete user?</p>
+            </div>
+            <div class="modal-footer">
+                <button ng-click="deleteRedirect()" type="button" class="btn btn-danger" >Yes</button>
+                <button type="button" ng-click="closeDelete()" class="btn btn-primary">No</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </modal-dialog>
+
+    <modal-dialog show='modalShown' configurator="configurator" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" ng-click="closeModal(isActiveOnSite)" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"><strong><% isActiveOnSite.label %> user on <% isActiveOnSite.sub.app.name %>.</strong></h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button ng-click="activateOnSite(!isActiveOnSite.value)" type="button" class="btn btn-danger" >Yes</button>
+                <button type="button" ng-click="activateOnSite(isActiveOnSite.value)" class="btn btn-primary">No</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </modal-dialog>
+
+    <modal-dialog show='modalCancelSub' configurator="" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" ng-click="closeModalCancelSub()" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"><strong>Cancel Subscription</strong></h4>
+            </div>
+            <div class="modal-body">
+                <p ng-show="cancelSubModel.is_recurrent && cancelSubModel.authorize_id">This user uses a monthly recurrent subscription, if you cancel one of the subscriptions all other will be canceled as well.</p>
+                <p>Are you sure? <%  dump(cancelSubModel)  %></p>
+            </div>
+            <div class="modal-footer">
+                <button ng-click="closeSubscription(cancelSubModel);" type="button" class="btn btn-danger" >Yes</button>
+                <button type="button" ng-click="closeModalCancelSub()" class="btn btn-primary">No</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </modal-dialog>
+</div>
